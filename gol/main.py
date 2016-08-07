@@ -16,23 +16,23 @@ ugfx.init()
 buttons.init()
  
 def game_of_life():
-	width = 32
-	height = 32
+	width = 40
+	height = 30
 	cell_width = 8
 	cell_height = 8
-	grid = [[0 for x in range(width)] for y in range(height)]
+	grid = [[0 for x in range(height)] for y in range(width)]
 	
 	def seed():
-		for x in range(1, width):
-			for y in range(1, height):
+		for x in range(0, width-1):
+			for y in range(0, height-1):
 				if pyb.rng() % 2 == 1:
 					grid[x][y] = 1
 				else:
 					grid[x][y] = 0
 	
 	def display():
-		for x in range(1, width):
-			for y in range(1, height):
+		for x in range(0, width-1):
+			for y in range(0, height-1):
 				if grid[x][y] == 1:
 					ugfx.area((x-1)*cell_width+1,(y-1)*cell_height, cell_width, cell_height, ugfx.BLACK)
 				else:
@@ -79,14 +79,19 @@ def game_of_life():
 				elif n == 3:
 					grid[x][y] = 1
 					changed += 1
-					
-				#return changed > 0
+		
+		if changed > 0:
+			return True
+		else:
+			return False
 					
 	seed()
+	g = 0
 	while True:
+		g += 1
 		display()
-		step()
-		if buttons.is_triggered("BTN_A"):
+		if step() is False or buttons.is_triggered("BTN_A") or g > 50:
 			seed()
+			g = 0
 		
 game_of_life()
